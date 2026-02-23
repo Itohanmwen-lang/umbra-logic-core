@@ -1,0 +1,97 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
+export default function UmbraLogic() {
+  const [tab, setTab] = useState('Crucible'); // 'Crucible' or 'Path'
+  const [energy, setEnergy] = useState(5);
+  const [regret, setRegret] = useState(5);
+  const [control, setControl] = useState(5);
+
+  // The Virgo Algorithm: Calculates the "Logic Score"
+  const calculateLogicScore = () => {
+    const score = ((10 - energy) + regret + control) / 3;
+    if (score > 7) return "PROCEED: Data supports action.";
+    if (score > 4) return "PAUSE: Gather more intel.";
+    return "ARCHIVE: Ghost thought detected.";
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <Text style={styles.title}>UMBRA LOGIC</Text>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity onPress={() => setTab('Crucible')}>
+          <Text style={[styles.tabText, tab === 'Crucible' && styles.activeTab]}>The Crucible</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setTab('Path')}>
+          <Text style={[styles.tabText, tab === 'Path' && styles.activeTab]}>The Path</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.content}>
+        {tab === 'Crucible' ? (
+          <View>
+            <Text style={styles.label}>Energy Drain: {energy}</Text>
+            <Slider value={energy} onValueChange={setEnergy} />
+            
+            <Text style={styles.label}>Future Regret: {regret}</Text>
+            <Slider value={regret} onValueChange={setRegret} />
+
+            <Text style={styles.label}>Control Factor: {control}</Text>
+            <Slider value={control} onValueChange={setControl} />
+
+            <View style={styles.resultBox}>
+              <Text style={styles.resultText}>{calculateLogicScore()}</Text>
+            </View>
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.pathTitle}>Current Topic: Stoic Precision</Text>
+            {[1, 2, 3, 4, 5].map((day) => (
+              <View key={day} style={[styles.dayCard, day > 1 && styles.lockedCard]}>
+                <Text style={styles.dayText}>Day {day} {day > 1 ? '🔒' : '●'}</Text>
+                {day === 1 && <Text style={styles.dayDesc}>Focus on what is within your control. Everything else is noise.</Text>}
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
+}
+
+// Minimalist Slider Component for Shadow Lord
+const Slider = ({ value, onValueChange }) => (
+  <View style={styles.sliderTrack}>
+    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+      <TouchableOpacity 
+        key={i} 
+        onPress={() => onValueChange(i)}
+        style={[styles.sliderBit, value >= i ? styles.activeBit : styles.inactiveBit]} 
+      />
+    ))}
+  </View>
+);
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#000', paddingTop: 60, paddingHorizontal: 20 },
+  title: { color: '#C0C0C0', fontSize: 24, letterSpacing: 4, textAlign: 'center', marginBottom: 20 },
+  tabContainer: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 30 },
+  tabText: { color: '#444', fontSize: 16, fontWeight: 'bold' },
+  activeTab: { color: '#FFF' },
+  content: { paddingBottom: 40 },
+  label: { color: '#888', marginBottom: 10, fontSize: 14, textTransform: 'uppercase' },
+  sliderTrack: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
+  sliderBit: { height: 30, width: width / 14, borderRadius: 2 },
+  activeBit: { backgroundColor: '#FFF' },
+  inactiveBit: { backgroundColor: '#222' },
+  resultBox: { borderTopWidth: 1, borderTopColor: '#333', marginTop: 20, paddingTop: 30 },
+  resultText: { color: '#FFF', fontSize: 18, textAlign: 'center', fontStyle: 'italic' },
+  pathTitle: { color: '#AAA', marginBottom: 20, fontSize: 16 },
+  dayCard: { padding: 20, backgroundColor: '#111', borderRadius: 8, marginBottom: 10 },
+  lockedCard: { opacity: 0.3 },
+  dayText: { color: '#FFF', fontWeight: 'bold' },
+  dayDesc: { color: '#888', marginTop: 10 }
+});
