@@ -1,97 +1,178 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMBRA LOGIC</title>
+    <style>
+        /* The Shadow Lord Aesthetic */
+        :root {
+            --bg: #000000;
+            --text: #C0C0C0;
+            --accent: #333333;
+            --highlight: #FFFFFF;
+            --dim: #444444;
+        }
 
-const { width } = Dimensions.get('window');
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-export default function UmbraLogic() {
-  const [tab, setTab] = useState('Crucible'); // 'Crucible' or 'Path'
-  const [energy, setEnergy] = useState(5);
-  const [regret, setRegret] = useState(5);
-  const [control, setControl] = useState(5);
+        header {
+            padding: 50px 20px;
+            text-align: center;
+            letter-spacing: 0.3em;
+            border-bottom: 1px solid var(--accent);
+            width: 100%;
+        }
 
-  // The Virgo Algorithm: Calculates the "Logic Score"
-  const calculateLogicScore = () => {
-    const score = ((10 - energy) + regret + control) / 3;
-    if (score > 7) return "PROCEED: Data supports action.";
-    if (score > 4) return "PAUSE: Gather more intel.";
-    return "ARCHIVE: Ghost thought detected.";
-  };
+        h1 { font-weight: 200; font-size: 1.5rem; margin: 0; color: var(--highlight); }
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <Text style={styles.title}>UMBRA LOGIC</Text>
-      <View style={styles.tabContainer}>
-        <TouchableOpacity onPress={() => setTab('Crucible')}>
-          <Text style={[styles.tabText, tab === 'Crucible' && styles.activeTab]}>The Crucible</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTab('Path')}>
-          <Text style={[styles.tabText, tab === 'Path' && styles.activeTab]}>The Path</Text>
-        </TouchableOpacity>
-      </View>
+        .container {
+            max-width: 450px;
+            width: 85%;
+            padding: 40px 0;
+        }
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {tab === 'Crucible' ? (
-          <View>
-            <Text style={styles.label}>Energy Drain: {energy}</Text>
-            <Slider value={energy} onValueChange={setEnergy} />
+        .logic-gate {
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+            color: var(--dim);
+        }
+
+        /* Minimalist Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            background: var(--highlight);
+            margin-top: -7px;
+            border-radius: 0; /* Square for Virgo precision */
+            cursor: pointer;
+        }
+
+        /* Result Area */
+        .result-display {
+            margin-top: 60px;
+            padding: 30px;
+            border: 1px solid var(--accent);
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        #verdict-text {
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            line-height: 1.6;
+        }
+
+        .score-meta {
+            margin-top: 15px;
+            font-size: 0.6rem;
+            color: var(--dim);
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 0.6rem;
+            color: var(--dim);
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>UMBRA LOGIC</h1>
+    </header>
+
+    <div class="container">
+        <div class="logic-gate">
+            <label id="label-energy">Energy Drain: 5</label>
+            <input type="range" id="energy" min="1" max="10" value="5" oninput="runLogic()">
+        </div>
+
+        <div class="logic-gate">
+            <label id="label-regret">Future Regret: 5</label>
+            <input type="range" id="regret" min="1" max="10" value="5" oninput="runLogic()">
+        </div>
+
+        <div class="logic-gate">
+            <label id="label-control">Control Factor: 5</label>
+            <input type="range" id="control" min="1" max="10" value="5" oninput="runLogic()">
+        </div>
+
+        <div class="result-display" id="display">
+            <div id="verdict-text">Adjust the sliders to filter your thoughts through the Umbra.</div>
+            <div class="score-meta" id="score-val">SYSTEM: STANDBY</div>
+        </div>
+    </div>
+
+    <footer>
+        CORE_v1.0 // VIRGO_PRECISION // SHADOW_LORD_OS
+    </footer>
+
+    <script>
+        function runLogic() {
+            // Get values
+            const e = parseInt(document.getElementById('energy').value);
+            const r = parseInt(document.getElementById('regret').value);
+            const c = parseInt(document.getElementById('control').value);
+
+            // Update Labels
+            document.getElementById('label-energy').innerText = `Energy Drain: ${e}`;
+            document.getElementById('label-regret').innerText = `Future Regret: ${r}`;
+            document.getElementById('label-control').innerText = `Control Factor: ${c}`;
+
+            // Umbra Algorithm: Higher score = Better to proceed
+            // We want LOW Energy Drain, HIGH Regret (if not done), and HIGH Control.
+            const score = ((11 - e) + r + c) / 3;
             
-            <Text style={styles.label}>Future Regret: {regret}</Text>
-            <Slider value={regret} onValueChange={setRegret} />
+            const verdict = document.getElementById('verdict-text');
+            const display = document.getElementById('display');
+            const meta = document.getElementById('score-val');
 
-            <Text style={styles.label}>Control Factor: {control}</Text>
-            <Slider value={control} onValueChange={setControl} />
+            meta.innerText = `LOGIC SCORE: ${score.toFixed(1)} / 10.0`;
 
-            <View style={styles.resultBox}>
-              <Text style={styles.resultText}>{calculateLogicScore()}</Text>
-            </View>
-          </View>
-        ) : (
-          <View>
-            <Text style={styles.pathTitle}>Current Topic: Stoic Precision</Text>
-            {[1, 2, 3, 4, 5].map((day) => (
-              <View key={day} style={[styles.dayCard, day > 1 && styles.lockedCard]}>
-                <Text style={styles.dayText}>Day {day} {day > 1 ? '🔒' : '●'}</Text>
-                {day === 1 && <Text style={styles.dayDesc}>Focus on what is within your control. Everything else is noise.</Text>}
-              </View>
-            ))}
-          </View>
-        )}
-      </ScrollView>
-    </View>
-  );
-}
-
-// Minimalist Slider Component for Shadow Lord
-const Slider = ({ value, onValueChange }) => (
-  <View style={styles.sliderTrack}>
-    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-      <TouchableOpacity 
-        key={i} 
-        onPress={() => onValueChange(i)}
-        style={[styles.sliderBit, value >= i ? styles.activeBit : styles.inactiveBit]} 
-      />
-    ))}
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', paddingTop: 60, paddingHorizontal: 20 },
-  title: { color: '#C0C0C0', fontSize: 24, letterSpacing: 4, textAlign: 'center', marginBottom: 20 },
-  tabContainer: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 30 },
-  tabText: { color: '#444', fontSize: 16, fontWeight: 'bold' },
-  activeTab: { color: '#FFF' },
-  content: { paddingBottom: 40 },
-  label: { color: '#888', marginBottom: 10, fontSize: 14, textTransform: 'uppercase' },
-  sliderTrack: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
-  sliderBit: { height: 30, width: width / 14, borderRadius: 2 },
-  activeBit: { backgroundColor: '#FFF' },
-  inactiveBit: { backgroundColor: '#222' },
-  resultBox: { borderTopWidth: 1, borderTopColor: '#333', marginTop: 20, paddingTop: 30 },
-  resultText: { color: '#FFF', fontSize: 18, textAlign: 'center', fontStyle: 'italic' },
-  pathTitle: { color: '#AAA', marginBottom: 20, fontSize: 16 },
-  dayCard: { padding: 20, backgroundColor: '#111', borderRadius: 8, marginBottom: 10 },
-  lockedCard: { opacity: 0.3 },
-  dayText: { color: '#FFF', fontWeight: 'bold' },
-  dayDesc: { color: '#888', marginTop: 10 }
-});
+            if (score >= 7.5) {
+                verdict.innerText = "VERDICT: PROCEED. The data is clear. This thought is worth your energy.";
+                display.style.borderColor = "#FFFFFF";
+            } else if (score >= 4.5) {
+                verdict.innerText = "VERDICT: PAUSE. You are overthinking with insufficient data. Step back.";
+                display.style.borderColor = "#444444";
+            } else {
+                verdict.innerText = "VERDICT: ARCHIVE. This is a ghost thought. Do not let it rent space in your mind.";
+                display.style.borderColor = "#222222";
+            }
+        }
+    </script>
+</body>
+</html>
